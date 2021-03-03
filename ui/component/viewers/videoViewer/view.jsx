@@ -114,6 +114,8 @@ function VideoViewer(props: Props) {
   const {
     location: { pathname },
   } = useHistory();
+  const previousUri = usePrevious(uri);
+  const embedded = useContext(EmbedContext);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showAutoplayCountdown, setShowAutoplayCountdown] = useState(false);
   const [isEndededEmbed, setIsEndededEmbed] = useState(false);
