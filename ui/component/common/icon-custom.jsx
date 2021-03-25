@@ -221,6 +221,15 @@ export const icons = {
       <line x1="1" y1="10" x2="23" y2="10" />
     </g>
   ),
+  [ICONS.COIN_SWAP]: buildIcon(
+    // @TODO: Placeholder for BTC or coin swap icon
+    <g>
+      <polyline points="23 4 23 10 17 10" />
+      <polyline points="1 20 1 14 7 14" />
+      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+    </g>
+  ),
+
   [ICONS.LIBRARY]: buildIcon(<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />),
   [ICONS.EDIT]: buildIcon(
     <g>
