@@ -370,6 +370,10 @@ function WalletSwap(props: Props) {
     );
   }
 
+  function getGap() {
+    return <div className="confirm__value" />; // better way?
+  }
+
   function getActionElement() {
     switch (action) {
       case ACTION_MAIN:
@@ -414,7 +418,7 @@ function WalletSwap(props: Props) {
             disabled={isSwapping}
             onChange={(event) => handleBtcChange(event)}
           />
-          <div className="confirm__value" />
+          {getGap()}
           <div className="confirm__label">{__('Credits')}</div>
           <div className="confirm__value">
             <LbcSymbol postfix={formatLbcString(lbc)} size={22} />
@@ -440,27 +444,27 @@ function WalletSwap(props: Props) {
       <div className="section section--padded card--inline confirm__wrapper">
         <div className="section">
           {swap && swap.coins && (
-            <div className="confirm__value">
-              <FormField
-                type="select"
-                name="select_coin"
-                value={coin}
-                label={__('Alternative coins')}
-                onChange={(e) => setCoin(e.target.value)}
-              >
-                {swap.coins.map((x) => (
-                  <option key={x} value={x}>
-                    {getCoinLabel(x)}
-                  </option>
-                ))}
-              </FormField>
-            </div>
+            <FormField
+              type="select"
+              name="select_coin"
+              value={coin}
+              label={__('Alternative coins')}
+              onChange={(e) => setCoin(e.target.value)}
+            >
+              {swap.coins.map((x) => (
+                <option key={x} value={x}>
+                  {getCoinLabel(x)}
+                </option>
+              ))}
+            </FormField>
           )}
+          {getGap()}
           <div className="confirm__label">{__('Send')}</div>
-          <div className="confirm__value">{getCoinSendAmountStr(coin)}</div>
+          <CopyableText primaryButton copyable={getCoinSendAmountStr(coin)} snackMessage={__('Value copied.')} />
+          {getGap()}
           <div className="confirm__label">{__('To')}</div>
           <CopyableText primaryButton copyable={getCoinAddress(coin)} snackMessage={__('Address copied.')} />
-          <div className="card__actions--inline">
+          <div className="confirm__value--subitem">
             <Button
               button="link"
               label={showQr ? __('Hide QR code') : __('Show QR code')}
@@ -468,7 +472,7 @@ function WalletSwap(props: Props) {
             />
             {showQr && getCoinAddress(coin) && <QRCode value={getCoinAddress(coin)} />}
           </div>
-          <div className="confirm__value" />
+          {getGap()}
           <div className="confirm__label">{__('Receive')}</div>
           <div className="confirm__value">{<LbcSymbol postfix={getLbcAmountStrForSwap(swap)} size={22} />}</div>
         </div>
@@ -482,8 +486,8 @@ function WalletSwap(props: Props) {
       <div className="section section--padded card--inline confirm__wrapper">
         <div className="section">
           <div className="confirm__label">{__('Confirming')}</div>
-          <div className="confirm__value">{getCoinSendAmountStr(coin)}</div>
-          <div className="confirm__label">{getViewTransactionElement(true)}</div>
+          <div className="confirm__value--no-gap">{getCoinSendAmountStr(coin)}</div>
+          <div className="confirm__value--subitem">{getViewTransactionElement(true)}</div>
         </div>
       </div>
       <div className="section__actions">{getCloseButton()}</div>
@@ -495,12 +499,16 @@ function WalletSwap(props: Props) {
       <div className="section section--padded card--inline confirm__wrapper">
         <div className="section">
           <div className="confirm__label">{__('Sent')}</div>
-          <div className="confirm__value">{getCoinSendAmountStr(coin)}</div>
-          <div className="confirm__label">{getViewTransactionElement(true)}</div>
-          <div className="confirm__value" />
+          <div className="confirm__value confirm__value--no-gap">{getCoinSendAmountStr(coin)}</div>
+          <div className="confirm__value--subitem">{getViewTransactionElement(true)}</div>
+          {getGap()}
           <div className="confirm__label">{action === ACTION_STATUS_SUCCESS ? __('Received') : __('Receiving')}</div>
-          <div className="confirm__value">{<LbcSymbol postfix={getLbcAmountStrForSwap(swap)} size={22} />}</div>
-          {action === ACTION_STATUS_SUCCESS && getViewTransactionElement(false)}
+          <div className="confirm__value confirm__value--no-gap">
+            {<LbcSymbol postfix={getLbcAmountStrForSwap(swap)} size={22} />}
+          </div>
+          {action === ACTION_STATUS_SUCCESS && (
+            <div className="confirm__value--subitem">{getViewTransactionElement(false)}</div>
+          )}
         </div>
       </div>
       <div className="section__actions">{getCloseButton()}</div>
