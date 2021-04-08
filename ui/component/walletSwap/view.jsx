@@ -171,11 +171,9 @@ function WalletSwap(props: Props) {
         break;
       case BTC_API_STATUS_ERROR:
         setNag({ msg: NAG_API_STATUS_ERROR, type: 'error' });
-        returnToMainAction();
         break;
       case INTERNAL_APIS_DOWN:
         setNag({ msg: NAG_SERVER_DOWN, type: 'error' });
-        returnToMainAction();
         break;
       case BTC_API_STATUS_EXPIRED:
         setNag({ msg: NAG_EXPIRED, type: 'error' });
