@@ -256,6 +256,11 @@
   }
 }
 
+.main--report-content {
+  @extend .main--auth-page;
+  max-width: 40rem;
+}
+
 .main--empty {
   align-self: center;
   display: flex;
