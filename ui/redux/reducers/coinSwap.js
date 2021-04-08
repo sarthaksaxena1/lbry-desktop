@@ -50,6 +50,10 @@ export default handleActions(
         charge = action.data.Charge.data;
       }
 
+      console.log('COIN_SWAP_STATUS_RECEIVED');
+      console.log('  exchange:', exchange);
+      console.log('  charge:', charge);
+
       const calculateLbcAmount = (pricing, exchange) => {
         if (!exchange || !exchange.rate) {
           return 0;
