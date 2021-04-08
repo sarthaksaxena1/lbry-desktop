@@ -221,6 +221,19 @@ function WalletSwap(props: Props) {
     return '';
   }
 
+  function getCoinLabel(coin) {
+    const COIN_LABEL = {
+      dai: 'Dai',
+      usdc: 'USD Coin',
+      bitcoin: 'Bitcoin',
+      ethereum: 'Ethereum',
+      litecoin: 'Litecoin',
+      bitcoincash: 'Bitcoin Cash',
+    };
+
+    return COIN_LABEL[coin] || coin;
+  }
+
   function handleStartSwap() {
     setIsSwapping(true);
     setSwap(null);
@@ -412,7 +425,7 @@ function WalletSwap(props: Props) {
               >
                 {swap.coins.map((x) => (
                   <option key={x} value={x}>
-                    {x}
+                    {getCoinLabel(x)}
                   </option>
                 ))}
               </FormField>
