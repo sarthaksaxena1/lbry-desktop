@@ -487,7 +487,7 @@ function WalletSwap(props: Props) {
           )}
           {getGap()}
           <div className="confirm__label">{__('Send')}</div>
-          <CopyableText primaryButton copyable={getCoinSendAmountStr(coin)} snackMessage={__('Value copied.')} />
+          <CopyableText primaryButton copyable={getCoinSendAmountStr(coin)} snackMessage={__('Amount copied.')} />
           {getGap()}
           <div className="confirm__label">{__('To')}</div>
           <CopyableText primaryButton copyable={getCoinAddress(coin)} snackMessage={__('Address copied.')} />
@@ -581,7 +581,7 @@ function WalletSwap(props: Props) {
                           <Button
                             button="link"
                             icon={ICONS.REMOVE}
-                            title={__('Remove address')}
+                            title={__('Remove swap')}
                             onClick={() => removeCoinSwap(x.chargeCode)}
                           />
                         </td>
@@ -619,7 +619,7 @@ function WalletSwap(props: Props) {
     <Form onSubmit={handleStartSwap}>
       <Card
         title={<I18nMessage tokens={{ lbc: <LbcSymbol size={22} /> }}>Swap Crypto for %lbc%</I18nMessage>}
-        subtitle={__('Send to the address provided and you will be sent an equivalent amount of Credits.')}
+        subtitle={__('Send crypto to the address provided and you will be sent an equivalent amount of Credits.')}
         actions={getActionElement()}
         nag={nag ? <Nag relative type={nag.type} message={__(nag.msg)} /> : null}
       />

@@ -15,9 +15,9 @@ function ModalRemoveBtcSwapAddress(props: Props) {
   const { chargeCode, removeCoinSwap, closeModal } = props;
 
   return (
-    <Modal isOpen contentLabel={__('Confirm Address Removal')} type="card" onAborted={closeModal}>
+    <Modal isOpen contentLabel={__('Confirm Swap Removal')} type="card" onAborted={closeModal}>
       <Card
-        title={__('Remove BTC Swap Address')}
+        title={__('Remove Swap')}
         subtitle={<I18nMessage tokens={{ address: <em>{`${chargeCode}`}</em> }}>Remove %address%?</I18nMessage>}
         body={<p className="help--warning">{__('This process cannot be reversed.')}</p>}
         actions={
