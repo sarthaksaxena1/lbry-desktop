@@ -90,9 +90,6 @@ function WalletSwap(props: Props) {
   const [lastStatusQuery, setLastStatusQuery] = React.useState();
   const { goBack } = useHistory();
 
-  const sendTxId = swap && swap.status ? swap.status.receipt_txid : null;
-  const lbcTxId = swap && swap.status ? swap.status.lbc_txid : null;
-
   function formatLbcString(lbc) {
     return lbc === 0 ? '---' : lbc.toLocaleString(undefined, { minimumFractionDigits: 8 });
   }
@@ -160,7 +157,7 @@ function WalletSwap(props: Props) {
         setNag({ msg: NAG_API_STATUS_CONFIRMING, type: 'helpful' });
         break;
       case BTC_API_STATUS_PROCESSING:
-        if (swapInfo.status.lbc_txid) {
+        if (swapInfo.status.lbcTxid) {
           setAction(ACTION_STATUS_SUCCESS);
           setNag({ msg: NAG_API_STATUS_SUCCESS, type: 'helpful' });
           setIsSwapping(false);
@@ -309,7 +306,7 @@ function WalletSwap(props: Props) {
         msg = __('Confirming');
         break;
       case BTC_API_STATUS_PROCESSING:
-        if (swapInfo.status.lbc_txid) {
+        if (swapInfo.status.lbcTxid) {
           msg = __('Credits sent');
         } else {
           msg = __('Sending Credits');
@@ -329,22 +326,54 @@ function WalletSwap(props: Props) {
     return msg;
   }
 
-  function getViewTransactionElement(isSend) {
+  function getViewTransactionElement(swap, isSend) {
+    if (!swap || !swap.status) {
+      return '';
+    }
+
+    const explorerUrl = (coin, txid) => {
+      if (!txid) {
+        return '';
+      }
+      switch (coin) {
+        case 'DAI':
+        case 'USDC':
+        default:
+          return '';
+        case 'BTC':
+          return `https://www.blockchain.com/btc/tx/${txid}`;
+        case 'ETH':
+          return `https://www.blockchain.com/eth/tx/${txid}`;
+        case 'LTC':
+          return `https://live.blockcypher.com/ltc/tx/${txid}/`;
+        case 'BCH':
+          return `https://www.blockchain.com/bch/tx/${txid}`;
+      }
+    };
+
     if (isSend) {
+      const sendTxId = swap.status.receiptTxid;
+      const url = explorerUrl(swap.status.receiptCurrency, sendTxId);
       return sendTxId ? (
-        <Button
-          button="link"
-          label={sendTxId.substring(0, 7)}
-          title={sendTxId}
-          onClick={() => {
-            clipboard.writeText(sendTxId);
-            doToast({
-              message: __('Transaction ID copied.'),
-            });
-          }}
-        />
+        <>
+          {url && <Button button="link" href={url} label={__('View transaction')} />}
+          {!url && (
+            <Button
+              button="link"
+              label={sendTxId.substring(0, 7)}
+              title={sendTxId}
+              onClick={() => {
+                clipboard.writeText(sendTxId);
+                doToast({
+                  message: __('Transaction ID copied.'),
+                });
+              }}
+            />
+          )}
+        </>
       ) : null;
     } else {
+      const lbcTxId = swap.status.lbcTxid;
       return lbcTxId ? (
         <Button button="link" href={`https://explorer.lbry.com/tx/${lbcTxId}`} label={__('View transaction')} />
       ) : null;
@@ -485,7 +514,7 @@ function WalletSwap(props: Props) {
         <div className="section">
           <div className="confirm__label">{__('Confirming')}</div>
           <div className="confirm__value--no-gap">{getCoinSendAmountStr(coin)}</div>
-          <div className="confirm__value--subitem">{getViewTransactionElement(true)}</div>
+          <div className="confirm__value--subitem">{getViewTransactionElement(swap, true)}</div>
         </div>
       </div>
       <div className="section__actions">{getCloseButton()}</div>
@@ -498,14 +527,14 @@ function WalletSwap(props: Props) {
         <div className="section">
           <div className="confirm__label">{__('Sent')}</div>
           <div className="confirm__value confirm__value--no-gap">{getCoinSendAmountStr(coin)}</div>
-          <div className="confirm__value--subitem">{getViewTransactionElement(true)}</div>
+          <div className="confirm__value--subitem">{getViewTransactionElement(swap, true)}</div>
           {getGap()}
           <div className="confirm__label">{action === ACTION_STATUS_SUCCESS ? __('Received') : __('Receiving')}</div>
           <div className="confirm__value confirm__value--no-gap">
             {<LbcSymbol postfix={getLbcAmountStrForSwap(swap)} size={22} />}
           </div>
           {action === ACTION_STATUS_SUCCESS && (
-            <div className="confirm__value--subitem">{getViewTransactionElement(false)}</div>
+            <div className="confirm__value--subitem">{getViewTransactionElement(swap, false)}</div>
           )}
         </div>
       </div>

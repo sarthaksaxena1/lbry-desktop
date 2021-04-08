@@ -77,8 +77,9 @@ export default handleActions(
           lbcAmount: calculateLbcAmount(charge.pricing, exchange),
           status: {
             status: lastTimeline.status,
-            receipt_txid: lastTimeline.payment.transaction_id,
-            lbc_txid: exchange.lbc_txid || '',
+            receiptCurrency: lastTimeline.payment.value.currency,
+            receiptTxid: lastTimeline.payment.transaction_id,
+            lbcTxid: exchange.lbc_txid || '',
           },
         };
       } else {
@@ -90,8 +91,9 @@ export default handleActions(
           lbcAmount: calculateLbcAmount(charge.pricing, exchange),
           status: {
             status: lastTimeline.status,
-            receipt_txid: lastTimeline.payment.transaction_id,
-            lbc_txid: exchange.lbc_txid || '',
+            receiptCurrency: lastTimeline.payment.value.currency,
+            receiptTxid: lastTimeline.payment.transaction_id,
+            lbcTxid: exchange.lbc_txid || '',
           },
         });
       }
