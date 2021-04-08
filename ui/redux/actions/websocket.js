@@ -78,7 +78,7 @@ export const doNotificationSocketConnect = (enableNotifications) => (dispatch) =
       case 'swap-status':
         dispatch({
           type: ACTIONS.COIN_SWAP_STATUS_RECEIVED,
-          data: data.data.event_data,
+          data: data.data,
         });
         break;
     }

@@ -37,14 +37,21 @@ export default handleActions(
       const { coinSwaps } = state;
       const newCoinSwaps = coinSwaps.slice();
 
-      // Sources:
-      // 1. Websocket -- only returns 'charge', so 'exchange' will be null.
-      // 2. btc/status -- returns both 'charge' and exchange'.
-      const exchange = action.data.Exchange;
-      const charge = action.data.Charge ? action.data.Charge.data : action.data;
+      let exchange;
+      let charge;
+
+      if (action.data.event_data) {
+        // Source: Websocket
+        exchange = { lbc_txid: action.data.lbc_txid };
+        charge = action.data.event_data;
+      } else {
+        // Source: btc/status
+        exchange = action.data.Exchange;
+        charge = action.data.Charge.data;
+      }
 
       const calculateLbcAmount = (pricing, exchange) => {
-        if (!exchange) {
+        if (!exchange || !exchange.rate) {
           return 0;
         }
 
@@ -66,7 +73,7 @@ export default handleActions(
           status: {
             status: lastTimeline.status,
             receipt_txid: lastTimeline.payment.transaction_id,
-            lbc_txid: '??',
+            lbc_txid: exchange.lbc_txid || '',
           },
         };
       } else {
@@ -79,7 +86,7 @@ export default handleActions(
           status: {
             status: lastTimeline.status,
             receipt_txid: lastTimeline.payment.transaction_id,
-            lbc_txid: '??',
+            lbc_txid: exchange.lbc_txid || '',
           },
         });
       }

@@ -28,9 +28,8 @@ const INTERNAL_APIS_DOWN = 'internal_apis_down';
 const BTC_API_STATUS_PENDING = 'NEW'; // Started swap, waiting for coin.
 const BTC_API_STATUS_CONFIRMING = 'PENDING'; // Coin receiving, waiting confirmation.
 const BTC_API_STATUS_PROCESSING = 'COMPLETED'; // Coin confirmed. Sending LBC.
-const BTC_API_STATUS_SUCCESS = 'Success';
+const BTC_API_STATUS_EXPIRED = 'EXPIRED'; // Charge expired (60 minutes).
 const BTC_API_STATUS_ERROR = 'Error';
-const BTC_API_STATUS_EXPIRED = 'EXPIRED';
 
 const ACTION_MAIN = 'action_main';
 const ACTION_STATUS_PENDING = 'action_pending';
@@ -159,13 +158,14 @@ function WalletSwap(props: Props) {
         setNag({ msg: NAG_API_STATUS_CONFIRMING, type: 'helpful' });
         break;
       case BTC_API_STATUS_PROCESSING:
-        setAction(ACTION_STATUS_PROCESSING);
-        setNag({ msg: NAG_API_STATUS_PROCESSING, type: 'helpful' });
-        break;
-      case BTC_API_STATUS_SUCCESS:
-        setAction(ACTION_STATUS_SUCCESS);
-        setNag({ msg: NAG_API_STATUS_SUCCESS, type: 'helpful' });
-        setIsSwapping(false);
+        if (swapInfo.status.lbc_txid) {
+          setAction(ACTION_STATUS_SUCCESS);
+          setNag({ msg: NAG_API_STATUS_SUCCESS, type: 'helpful' });
+          setIsSwapping(false);
+        } else {
+          setAction(ACTION_STATUS_PROCESSING);
+          setNag({ msg: NAG_API_STATUS_PROCESSING, type: 'helpful' });
+        }
         break;
       case BTC_API_STATUS_ERROR:
         setNag({ msg: NAG_API_STATUS_ERROR, type: 'error' });
@@ -311,10 +311,11 @@ function WalletSwap(props: Props) {
         msg = __('Confirming');
         break;
       case BTC_API_STATUS_PROCESSING:
-        msg = __('Sending Credits');
-        break;
-      case BTC_API_STATUS_SUCCESS:
-        msg = __('Completed');
+        if (swapInfo.status.lbc_txid) {
+          msg = __('Credits sent');
+        } else {
+          msg = __('Sending Credits');
+        }
         break;
       case BTC_API_STATUS_ERROR:
         msg = __('Failed');
