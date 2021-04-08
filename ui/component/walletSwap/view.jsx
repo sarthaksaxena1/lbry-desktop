@@ -8,6 +8,7 @@ import LbcSymbol from 'component/common/lbc-symbol';
 import Spinner from 'component/spinner';
 import Nag from 'component/common/nag';
 import CopyableText from 'component/copyableText';
+import Icon from 'component/common/icon';
 import QRCode from 'component/common/qr-code';
 import usePersistedState from 'effects/use-persisted-state';
 import * as ICONS from 'constants/icons';
@@ -87,6 +88,7 @@ function WalletSwap(props: Props) {
   const [swap, setSwap] = React.useState({});
   const [coin, setCoin] = React.useState('bitcoin');
   const [lastStatusQuery, setLastStatusQuery] = React.useState();
+  const { goBack } = useHistory();
 
   const sendTxId = swap && swap.status ? swap.status.receipt_txid : null;
   const lbcTxId = swap && swap.status ? swap.status.lbc_txid : null;
@@ -177,6 +179,9 @@ function WalletSwap(props: Props) {
         break;
       case BTC_API_STATUS_EXPIRED:
         setNag({ msg: NAG_EXPIRED, type: 'error' });
+        if (action === ACTION_PAST_SWAPS) {
+          setAction(ACTION_STATUS_PENDING);
+        }
         break;
       default:
         setNag({ msg: swapInfo.status.status, type: 'error' });
@@ -269,11 +274,6 @@ function WalletSwap(props: Props) {
       });
   }
 
-  function handleCancelPending() {
-    returnToMainAction();
-    setNag(null);
-  }
-
   function handleBtcChange(event: SyntheticInputEvent<*>) {
     const btc = parseFloat(event.target.value);
     setBtc(btc);
@@ -351,6 +351,23 @@ function WalletSwap(props: Props) {
         <Button button="link" href={`https://explorer.lbry.com/tx/${lbcTxId}`} label={__('View transaction')} />
       ) : null;
     }
+  }
+
+  function getCloseButton() {
+    return (
+      <>
+        <Button autoFocus button="primary" label={__('Close')} onClick={() => goBack()} />
+        <Icon
+          className="icon--help"
+          icon={ICONS.HELP}
+          tooltip
+          size={16}
+          customTooltipText={__(
+            'This page can be closed while the transactions are in progress.\nYou can view the status later from:\n • Wallet » Swap » View Past Swaps'
+          )}
+        />
+      </>
+    );
   }
 
   function getActionElement() {
@@ -456,9 +473,7 @@ function WalletSwap(props: Props) {
           <div className="confirm__value">{<LbcSymbol postfix={getLbcAmountStrForSwap(swap)} size={22} />}</div>
         </div>
       </div>
-      <div className="section__actions">
-        <Button autoFocus onClick={handleCancelPending} button="primary" label={__('Go Back')} />
-      </div>
+      <div className="section__actions">{getCloseButton()}</div>
     </>
   );
 
@@ -471,9 +486,7 @@ function WalletSwap(props: Props) {
           <div className="confirm__label">{getViewTransactionElement(true)}</div>
         </div>
       </div>
-      <div className="section__actions">
-        <Button autoFocus onClick={handleCancelPending} button="primary" label={__('Go Back')} />
-      </div>
+      <div className="section__actions">{getCloseButton()}</div>
     </>
   );
 
@@ -490,9 +503,7 @@ function WalletSwap(props: Props) {
           {action === ACTION_STATUS_SUCCESS && getViewTransactionElement(false)}
         </div>
       </div>
-      <div className="section__actions">
-        <Button autoFocus onClick={handleCancelPending} button="primary" label={__('Go Back')} />
-      </div>
+      <div className="section__actions">{getCloseButton()}</div>
     </>
   );
 
@@ -548,7 +559,15 @@ function WalletSwap(props: Props) {
         </div>
       </div>
       <div className="section__actions">
-        <Button autoFocus onClick={handleCancelPending} button="primary" label={__('Go Back')} />
+        <Button
+          autoFocus
+          button="primary"
+          label={__('Go Back')}
+          onClick={() => {
+            returnToMainAction();
+            setNag(null);
+          }}
+        />
         {coinSwaps.length !== 0 && !isRefreshingStatus && (
           <Button button="link" label={__('Refresh')} onClick={handleViewPastSwaps} />
         )}
