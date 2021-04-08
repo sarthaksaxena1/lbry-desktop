@@ -234,6 +234,13 @@ function WalletSwap(props: Props) {
     return COIN_LABEL[coin] || coin;
   }
 
+  function getLbcAmountStrForSwap(swap) {
+    if (swap && swap.lbcAmount) {
+      return formatLbcString(swap.lbcAmount);
+    }
+    return '---';
+  }
+
   function handleStartSwap() {
     setIsSwapping(true);
     setSwap(null);
@@ -445,7 +452,7 @@ function WalletSwap(props: Props) {
           </div>
           <div className="confirm__value" />
           <div className="confirm__label">{__('Receive')}</div>
-          <div className="confirm__value">{<LbcSymbol postfix={formatLbcString(lbc)} size={22} />}</div>
+          <div className="confirm__value">{<LbcSymbol postfix={getLbcAmountStrForSwap(swap)} size={22} />}</div>
         </div>
       </div>
       <div className="section__actions">
@@ -478,7 +485,7 @@ function WalletSwap(props: Props) {
           <div className="confirm__label">{getViewTransactionElement(true)}</div>
           <div className="confirm__value" />
           <div className="confirm__label">{action === ACTION_STATUS_SUCCESS ? __('Received') : __('Receiving')}</div>
-          <div className="confirm__value">{<LbcSymbol postfix={formatLbcString(lbc)} size={22} />}</div>
+          <div className="confirm__value">{<LbcSymbol postfix={getLbcAmountStrForSwap(swap)} size={22} />}</div>
           {action === ACTION_STATUS_SUCCESS && getViewTransactionElement(false)}
         </div>
       </div>
@@ -518,10 +525,7 @@ function WalletSwap(props: Props) {
                             title={x.chargeCode}
                             label={x.chargeCode}
                             onClick={() => {
-                              clipboard.writeText(x.chargeCode);
-                              doToast({
-                                message: __('Code copied.'),
-                              });
+                              setSwap({ ...x });
                             }}
                           />
                         </td>
