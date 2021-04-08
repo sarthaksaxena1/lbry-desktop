@@ -60,7 +60,8 @@ export default handleActions(
         }
 
         const btcAmount = pricing['bitcoin'].amount;
-        return btcAmount / exchange.rate;
+        const SATOSHIS = 100000000;
+        return (btcAmount * SATOSHIS) / exchange.rate;
       };
 
       const timeline = charge.timeline;
@@ -73,7 +74,7 @@ export default handleActions(
           coins: Object.keys(charge.addresses),
           sendAddresses: charge.addresses,
           sendAmounts: charge.pricing,
-          lbcAmount: newCoinSwaps[index].lbcAmount || calculateLbcAmount(charge.pricing, exchange),
+          lbcAmount: calculateLbcAmount(charge.pricing, exchange),
           status: {
             status: lastTimeline.status,
             receipt_txid: lastTimeline.payment.transaction_id,

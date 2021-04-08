@@ -127,9 +127,9 @@ function WalletSwap(props: Props) {
 
     const timer = setTimeout(() => {
       Lbryio.call('btc', 'rate', { satoshi: BTC_SATOSHIS })
-        .then((result) => {
+        .then((rate) => {
           setIsFetchingRate(false);
-          setLbc(btc / result);
+          setLbc((btc * BTC_SATOSHIS) / Math.round(BTC_SATOSHIS * rate));
         })
         .catch(() => {
           setIsFetchingRate(false);
