@@ -6,13 +6,16 @@ import Nag from 'component/common/nag';
 import { parseURI } from 'lbry-redux';
 import Button from 'component/button';
 import Card from 'component/common/card';
-import { AUTO_FOLLOW_CHANNELS, SIMPLE_SITE } from 'config';
+import { AUTO_FOLLOW_CHANNELS, SIMPLE_SITE, SITE_NAME } from 'config';
 
 type Props = {
   subscribedChannels: Array<Subscription>,
   onContinue: () => void,
   channelSubscribe: (sub: Subscription) => void,
   homepageData: any,
+  prefsReady: boolean,
+  hasSyncedWallet: boolean,
+  syncEnabled: boolean,
 };
 
 const channelsToSubscribe = AUTO_FOLLOW_CHANNELS.trim()
@@ -20,27 +23,38 @@ const channelsToSubscribe = AUTO_FOLLOW_CHANNELS.trim()
   .filter((x) => x !== '');
 
 function UserChannelFollowIntro(props: Props) {
-  const { subscribedChannels, channelSubscribe, onContinue, homepageData } = props;
+  const {
+    subscribedChannels,
+    channelSubscribe,
+    onContinue,
+    homepageData,
+    prefsReady,
+    syncEnabled,
+    hasSyncedWallet,
+  } = props;
   const { PRIMARY_CONTENT_CHANNEL_IDS } = homepageData;
   const followingCount = (subscribedChannels && subscribedChannels.length) || 0;
+  const shouldAutoFollow = syncEnabled ? hasSyncedWallet : prefsReady;
 
   // subscribe to lbry
   useEffect(() => {
-    if (channelsToSubscribe && channelsToSubscribe.length) {
-      channelsToSubscribe.forEach((c) =>
-        channelSubscribe({
-          channelName: parseURI(c).claimName,
-          uri: c,
-        })
-      );
+    if (shouldAutoFollow) {
+      if (channelsToSubscribe && channelsToSubscribe.length) {
+        channelsToSubscribe.forEach((c) =>
+          channelSubscribe({
+            channelName: parseURI(c).claimName,
+            uri: c,
+          })
+        );
+      }
     }
-  }, []);
+  }, [shouldAutoFollow]);
 
   return (
     <Card
       title={__('Find channels to follow')}
       subtitle={__(
-        'Odysee works better if you find and follow a couple creators you like. You can also block channels you never want to see.'
+        `${SITE_NAME} works better if you find and follow a couple creators you like. You can also block channels you never want to see.`
       )}
       actions={
         <React.Fragment>
