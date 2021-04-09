@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import LivestreamList from 'component/LivestreamList';
+import LivestreamList from 'component/livestreamList';
 import Button from 'component/button';
 import Page from 'component/page';
 import Yrbl from 'component/yrbl';
@@ -11,7 +11,7 @@ type Props = {
 
 export default function LivestreamCurrentPage(props: Props) {
   const { user } = props;
-  const canView = user && 'user.global_mode';
+  const canView = user && user.global_mod;
 
   return (
     <Page>

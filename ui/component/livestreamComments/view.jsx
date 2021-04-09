@@ -18,7 +18,7 @@ type Props = {
   fetchingComments: boolean,
 };
 
-export default function LivestreamFeed(props: Props) {
+export default function LivestreamComments(props: Props) {
   const {
     claim,
     uri,
@@ -130,10 +130,10 @@ export default function LivestreamFeed(props: Props) {
             ) : (
               <div className="main--empty" />
             )}
-          </div>
 
-          <div className="livestream__comment-create">
-            <CommentCreate livestream bottom embed={embed} uri={uri} />
+            <div className="livestream__comment-create">
+              <CommentCreate livestream bottom embed={embed} uri={uri} />
+            </div>
           </div>
         </>
       }

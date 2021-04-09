@@ -5,6 +5,7 @@ import React from 'react';
 import ClaimList from 'component/claimList';
 import Icon from 'component/common/icon';
 import Spinner from 'component/spinner';
+import ClaimTilesDiscover from 'component/claimTilesDiscover';
 
 const LIVESTREAM_POLL_IN_MS = 10 * 1000;
 
@@ -61,25 +62,38 @@ export default function LivestreamList() {
       )}
 
       {livestreamMap && Object.keys(livestreamMap).length > 0 && (
-        <div className="claim-grid__wrapper">
-          <h1 className="claim-grid__header">
-            <Icon className="claim-grid__header-icon" sectionIcon icon={ICONS.LIVESTREAM_SOLID} size={26} />
-            <span className="claim-grid__title">{__('Currently Live')}</span>
-          </h1>
-          <ClaimList
-            tileLayout
-            title={__('Currently Live')}
-            renderProperties={(claim) => {
-              const livestream = livestreamMap[claim.claim_id];
-              return (
-                <span>
-                  {livestream.viewCount} <Icon icon={ICONS.EYE} />
-                </span>
-              );
-            }}
-            uris={livestreamUris}
-          />
-        </div>
+        <ClaimTilesDiscover
+          channelIds={Object.keys(livestreamMap)}
+          limitClaimsPerChannel={1}
+          renderProperties={(claim) => {
+            const livestream = livestreamMap[claim.signing_channel.claim_id];
+
+            return (
+              <span className="livestream__viewer-count">
+                {livestream.viewCount} <Icon icon={ICONS.EYE} />
+              </span>
+            );
+          }}
+        />
+        // <div className="claim-grid__wrapper">
+        //   <h1 className="claim-grid__header">
+        //     <Icon className="claim-grid__header-icon" sectionIcon icon={ICONS.LIVESTREAM_SOLID} size={26} />
+        //     <span className="claim-grid__title">{__('Currently Live')}</span>
+        //   </h1>
+        //   <ClaimList
+        //     tileLayout
+        //     title={__('Currently Live')}
+        //     renderProperties={(claim) => {
+        //       const livestream = livestreamMap[claim.claim_id];
+        //       return (
+        //         <span>
+        //           {livestream.viewCount} <Icon icon={ICONS.EYE} />
+        //         </span>
+        //       );
+        //     }}
+        //     uris={livestreamUris}
+        //   />
+        // </div>
       )}
     </>
   );

@@ -28,14 +28,31 @@
   margin-top: var(--spacing-m);
 
   @media (min-width: $breakpoint-small) {
-    width: 35rem;
-    margin-left: var(--spacing-m);
-    margin-top: 0;
+    margin: 0;
+    width: var(--livestream-comments-width);
+    height: calc(100vh - var(--header-height));
+    position: fixed;
+    right: 0;
+    top: var(--header-height);
+    bottom: 0;
+    border-radius: 0;
+    border-top: none;
+    border-bottom: none;
+    border-right: none;
+
+    .card__main-actions {
+      padding-bottom: 0;
+    }
   }
 }
 
 .livestream__comments-wrapper {
+  height: calc(100% - var(--spacing-l) - var(--spacing-s));
   overflow-y: scroll;
+  overflow-x: visible;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .livestream__comments-wrapper--with-height {
@@ -119,14 +136,6 @@
   }
 }
 
-.livestream__emoji-actions {
-  margin-bottom: var(--spacing-m);
-
-  > *:not(:last-child) {
-    margin-right: var(--spacing-s);
-  }
-}
-
 .livestream__embed-page {
   display: flex;
 
@@ -174,34 +183,15 @@
   width: 100vw;
 }
 
-.livestream__embed-comments {
-  width: 30vw;
-  height: 100vh;
-  display: none;
-
-  .livestream__discussion {
-    height: 100vh;
-    margin-left: 0;
-  }
-
-  .card {
-    border-radius: 0;
-  }
-
-  .card__main-actions {
-    height: 100%;
-    width: 30vw;
-  }
-
-  .livestream__comments-wrapper--with-height {
-    height: calc(100% - 200px - (var(--spacing-l)));
-  }
-
-  @media (min-width: $breakpoint-small) {
-    display: inline-block;
-  }
-}
-
 .livestream__publish-intro {
   margin-top: var(--spacing-l);
+}
+
+.livestream__viewer-count {
+  display: flex;
+  align-items: center;
+
+  .icon {
+    margin-left: var(--spacing-xs);
+  }
 }

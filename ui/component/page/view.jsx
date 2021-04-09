@@ -51,6 +51,7 @@ function Page(props: Props) {
     videoTheaterMode,
     isMarkdown = false,
     livestream,
+    rightSide,
   } = props;
 
   const {
@@ -113,7 +114,9 @@ function Page(props: Props) {
             'main--livestream': livestream,
           })}
         >
-          {children}
+          <div>{children}</div>
+
+          {rightSide && <div className="main__right-side">{rightSide}</div>}
         </main>
         {/* @if TARGET='app' */}
         <StatusBar />

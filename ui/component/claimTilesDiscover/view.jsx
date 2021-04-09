@@ -1,5 +1,6 @@
 // @flow
 import { ENABLE_NO_SOURCE_CLAIMS } from 'config';
+import type { Node } from 'react';
 import React from 'react';
 import { createNormalizedClaimSearchKey, MATURE_TAGS } from 'lbry-redux';
 import ClaimPreviewTile from 'component/claimPreviewTile';
@@ -32,6 +33,8 @@ type Props = {
   timestamp?: string,
   feeAmount?: string,
   limitClaimsPerChannel?: number,
+  hasNoSource?: boolean,
+  renderProperties?: (Claim) => ?Node,
 };
 
 function ClaimTilesDiscover(props: Props) {
@@ -54,6 +57,8 @@ function ClaimTilesDiscover(props: Props) {
     feeAmount,
     limitClaimsPerChannel,
     fetchingClaimSearchByQuery,
+    hasNoSource,
+    renderProperties,
   } = props;
   const { location } = useHistory();
   const urlParams = new URLSearchParams(location.search);
@@ -91,7 +96,9 @@ function ClaimTilesDiscover(props: Props) {
     order_by: orderBy || ['trending_group', 'trending_mixed'],
   };
 
-  if (!ENABLE_NO_SOURCE_CLAIMS && (!claimType || claimType === 'stream')) {
+  if (ENABLE_NO_SOURCE_CLAIMS && hasNoSource) {
+    options.has_no_source = true;
+  } else if (!ENABLE_NO_SOURCE_CLAIMS && (!claimType || claimType === 'stream')) {
     options.has_source = true;
   }
 
@@ -145,7 +152,7 @@ function ClaimTilesDiscover(props: Props) {
   return (
     <ul className="claim-grid">
       {uris && uris.length
-        ? uris.map((uri) => <ClaimPreviewTile key={uri} uri={uri} />)
+        ? uris.map((uri) => <ClaimPreviewTile key={uri} uri={uri} properties={renderProperties} />)
         : new Array(pageSize).fill(1).map((x, i) => <ClaimPreviewTile key={i} placeholder />)}
     </ul>
   );

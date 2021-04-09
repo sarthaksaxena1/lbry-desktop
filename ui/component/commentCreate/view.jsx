@@ -1,6 +1,7 @@
 // @flow
 import { SIMPLE_SITE } from 'config';
 import * as PAGES from 'constants/pages';
+import * as ICONS from 'constants/icons';
 import React, { useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { FormField, Form } from 'component/common/form';
@@ -10,16 +11,8 @@ import usePersistedState from 'effects/use-persisted-state';
 import { FF_MAX_CHARS_IN_COMMENT } from 'constants/form-field';
 import { useHistory } from 'react-router';
 import type { ElementRef } from 'react';
-import emoji from 'emoji-dictionary';
 
 const COMMENT_SLOW_MODE_SECONDS = 5;
-const LIVESTREAM_EMOJIS = [
-  emoji.getUnicode('rocket'),
-  emoji.getUnicode('jeans'),
-  emoji.getUnicode('fire'),
-  emoji.getUnicode('heart'),
-  emoji.getUnicode('open_mouth'),
-];
 
 type Props = {
   uri: string,
@@ -184,23 +177,6 @@ export function CommentCreate(props: Props) {
         autoFocus={isReply}
         textAreaMaxLength={FF_MAX_CHARS_IN_COMMENT}
       />
-      {livestream && hasChannels && (
-        <div className="livestream__emoji-actions">
-          {LIVESTREAM_EMOJIS.map((emoji) => (
-            <Button
-              key={emoji}
-              disabled={isPostingComment}
-              type="button"
-              button="alt"
-              className="button--emoji"
-              label={emoji}
-              onClick={() => {
-                setCommentValue(commentValue ? `${commentValue} ${emoji}` : emoji);
-              }}
-            />
-          ))}
-        </div>
-      )}
       <div className="section__actions section__actions--no-margin">
         <Button
           ref={buttonref}
@@ -218,6 +194,7 @@ export function CommentCreate(props: Props) {
           }
           requiresAuth={IS_WEB}
         />
+        <Button disabled={disabled} button="secondary" icon={ICONS.LBC} />
         {isReply && (
           <Button
             button="link"
