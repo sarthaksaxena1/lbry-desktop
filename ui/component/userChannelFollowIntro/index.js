@@ -4,7 +4,7 @@ import { selectSubscriptions } from 'redux/selectors/subscriptions';
 import { doChannelSubscribe } from 'redux/actions/subscriptions';
 import UserChannelFollowIntro from './view';
 import { makeSelectClientSetting, selectHomepageData } from 'redux/selectors/settings';
-import { selectHasSyncedWallet, selectPrefsReady } from 'redux/selectors/sync';
+import { selectHasSyncedWallet, selectPrefsReady, selectSyncIsLocked } from 'redux/selectors/sync';
 import { SETTINGS } from 'lbry-redux';
 
 const select = (state) => ({
@@ -14,6 +14,7 @@ const select = (state) => ({
   prefsReady: selectPrefsReady(state),
   hasSyncedWallet: selectHasSyncedWallet(state),
   syncEnabled: makeSelectClientSetting(SETTINGS.ENABLE_SYNC)(state),
+  syncIsLocked: selectSyncIsLocked(state),
 });
 
 const perform = (dispatch) => ({

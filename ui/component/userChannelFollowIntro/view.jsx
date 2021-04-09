@@ -16,6 +16,7 @@ type Props = {
   prefsReady: boolean,
   hasSyncedWallet: boolean,
   syncEnabled: boolean,
+  syncIsLocked: boolean,
 };
 
 const channelsToSubscribe = AUTO_FOLLOW_CHANNELS.trim()
@@ -31,14 +32,15 @@ function UserChannelFollowIntro(props: Props) {
     prefsReady,
     syncEnabled,
     hasSyncedWallet,
+    syncIsLocked,
   } = props;
   const { PRIMARY_CONTENT_CHANNEL_IDS } = homepageData;
   const followingCount = (subscribedChannels && subscribedChannels.length) || 0;
   const shouldAutoFollow = syncEnabled ? hasSyncedWallet : prefsReady;
 
-  // subscribe to lbry
   useEffect(() => {
-    if (shouldAutoFollow) {
+    console.log('shouldFollow', shouldAutoFollow);
+    if (shouldAutoFollow && !syncIsLocked) {
       if (channelsToSubscribe && channelsToSubscribe.length) {
         channelsToSubscribe.forEach((c) =>
           channelSubscribe({
@@ -48,7 +50,7 @@ function UserChannelFollowIntro(props: Props) {
         );
       }
     }
-  }, [shouldAutoFollow]);
+  }, [syncIsLocked, shouldAutoFollow]);
 
   return (
     <Card
