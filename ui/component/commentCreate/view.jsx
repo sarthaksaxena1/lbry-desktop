@@ -56,6 +56,7 @@ export function CommentCreate(props: Props) {
     location: { pathname },
   } = useHistory();
   const { claim_id: claimId } = claim;
+  const [isSupportComment, setIsSupportComment] = React.useState();
   const [commentValue, setCommentValue] = React.useState('');
   const [lastCommentTime, setLastCommentTime] = React.useState();
   const [charCount, setCharCount] = useState(commentValue.length);
@@ -177,34 +178,50 @@ export function CommentCreate(props: Props) {
         autoFocus={isReply}
         textAreaMaxLength={FF_MAX_CHARS_IN_COMMENT}
       />
+      {isSupportComment && <div></div>}
       <div className="section__actions section__actions--no-margin">
-        <Button
-          ref={buttonref}
-          button="primary"
-          disabled={disabled}
-          type="submit"
-          label={
-            isReply
-              ? isPostingComment
-                ? __('Replying...')
-                : __('Reply')
-              : isPostingComment
-              ? __('Posting...')
-              : __('Post --[button to submit something]--')
-          }
-          requiresAuth={IS_WEB}
-        />
-        <Button disabled={disabled} button="secondary" icon={ICONS.LBC} />
-        {isReply && (
-          <Button
-            button="link"
-            label={__('Cancel')}
-            onClick={() => {
-              if (onCancelReplying) {
-                onCancelReplying();
+        {isSupportComment ? (
+          <>
+            <Button
+              disabled={disabled}
+              button="primary"
+              icon={ICONS.LBC}
+              label={__('Send Moonchat')}
+              //   onClick={() => setIsSupportComment(true)}
+            />
+            <Button disabled={disabled} button="link" label={__('Cancel')} onClick={() => setIsSupportComment(false)} />
+          </>
+        ) : (
+          <>
+            <Button
+              ref={buttonref}
+              button="primary"
+              disabled={disabled}
+              type="submit"
+              label={
+                isReply
+                  ? isPostingComment
+                    ? __('Replying...')
+                    : __('Reply')
+                  : isPostingComment
+                  ? __('Posting...')
+                  : __('Post --[button to submit something]--')
               }
-            }}
-          />
+              requiresAuth={IS_WEB}
+            />
+            <Button disabled={disabled} button="secondary" icon={ICONS.LBC} onClick={() => setIsSupportComment(true)} />
+            {isReply && (
+              <Button
+                button="link"
+                label={__('Cancel')}
+                onClick={() => {
+                  if (onCancelReplying) {
+                    onCancelReplying();
+                  }
+                }}
+              />
+            )}
+          </>
         )}
       </div>
     </Form>

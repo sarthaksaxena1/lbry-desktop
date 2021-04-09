@@ -106,7 +106,7 @@ export default function LivestreamComments(props: Props) {
           <div
             ref={commentsRef}
             className={classnames('livestream__comments-wrapper', {
-              'livestream__comments-wrapper--with-height': commentsLength > 0,
+              //   'livestream__comments-wrapper--with-height': commentsLength > 0,
             })}
           >
             {!fetchingComments && comments.length > 0 ? (

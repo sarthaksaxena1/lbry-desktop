@@ -223,71 +223,6 @@ function WalletSendTip(props: Props) {
                   <ChannelSelector />
                 </div>
 
-                <div className="section">
-                  {DEFAULT_TIP_AMOUNTS.map((amount) => (
-                    <Button
-                      key={amount}
-                      disabled={amount > balance}
-                      button="alt"
-                      className={classnames('button-toggle button-toggle--expandformobile', {
-                        'button-toggle--active': tipAmount === amount,
-                        'button-toggle--disabled': amount > balance,
-                      })}
-                      label={amount}
-                      icon={ICONS.LBC}
-                      onClick={() => {
-                        setPresetTipAmount(amount);
-                        setUseCustomTip(false);
-                      }}
-                    />
-                  ))}
-                  <Button
-                    button="alt"
-                    className={classnames('button-toggle button-toggle--expandformobile', {
-                      'button-toggle--active': !DEFAULT_TIP_AMOUNTS.includes(tipAmount),
-                    })}
-                    icon={ICONS.LBC}
-                    label={__('Custom')}
-                    onClick={() => setUseCustomTip(true)}
-                  />
-                  {DEFAULT_TIP_AMOUNTS.some((val) => val > balance) && (
-                    <Button
-                      button="secondary"
-                      className="button-toggle-group-action"
-                      icon={ICONS.BUY}
-                      title={__('Buy more LBRY Credits')}
-                      navigate={`/$/${PAGES.BUY}`}
-                    />
-                  )}
-                </div>
-
-                {useCustomTip && (
-                  <div className="section">
-                    <FormField
-                      autoFocus
-                      name="tip-input"
-                      label={
-                        <React.Fragment>
-                          {__('Custom support amount')}{' '}
-                          <I18nMessage
-                            tokens={{ lbc_balance: <CreditAmount precision={4} amount={balance} showLBC={false} /> }}
-                          >
-                            (%lbc_balance% Credits available)
-                          </I18nMessage>
-                        </React.Fragment>
-                      }
-                      className="form-field--price-amount"
-                      error={tipError}
-                      min="0"
-                      step="any"
-                      type="number"
-                      placeholder="1.23"
-                      value={customTipAmount}
-                      onChange={(event) => handleCustomPriceChange(event)}
-                    />
-                  </div>
-                )}
-
                 <div className="section__actions">
                   <Button
                     autoFocus
@@ -310,6 +245,80 @@ function WalletSendTip(props: Props) {
         />
       )}
     </Form>
+  );
+}
+
+type TipAmountProps = {
+  handleChange: (number) => void,
+  balance: number,
+};
+
+export function TipAmountSelector(props: TipAmountProps) {
+  const { handleChange, balance } = props;
+  return (
+    <>
+      <div className="section">
+        {DEFAULT_TIP_AMOUNTS.map((amount) => (
+          <Button
+            key={amount}
+            disabled={amount > balance}
+            button="alt"
+            className={classnames('button-toggle button-toggle--expandformobile', {
+              'button-toggle--active': tipAmount === amount,
+              'button-toggle--disabled': amount > balance,
+            })}
+            label={amount}
+            icon={ICONS.LBC}
+            onClick={() => {
+              setPresetTipAmount(amount);
+              setUseCustomTip(false);
+            }}
+          />
+        ))}
+        <Button
+          button="alt"
+          className={classnames('button-toggle button-toggle--expandformobile', {
+            'button-toggle--active': !DEFAULT_TIP_AMOUNTS.includes(tipAmount),
+          })}
+          icon={ICONS.LBC}
+          label={__('Custom')}
+          onClick={() => setUseCustomTip(true)}
+        />
+        {DEFAULT_TIP_AMOUNTS.some((val) => val > balance) && (
+          <Button
+            button="secondary"
+            className="button-toggle-group-action"
+            icon={ICONS.BUY}
+            title={__('Buy more LBRY Credits')}
+            navigate={`/$/${PAGES.BUY}`}
+          />
+        )}
+      </div>
+      {useCustomTip && (
+        <div className="section">
+          <FormField
+            autoFocus
+            name="tip-input"
+            label={
+              <React.Fragment>
+                {__('Custom support amount')}{' '}
+                <I18nMessage tokens={{ lbc_balance: <CreditAmount precision={4} amount={balance} showLBC={false} /> }}>
+                  (%lbc_balance% Credits available)
+                </I18nMessage>
+              </React.Fragment>
+            }
+            className="form-field--price-amount"
+            error={tipError}
+            min="0"
+            step="any"
+            type="number"
+            placeholder="1.23"
+            value={customTipAmount}
+            onChange={(event) => handleCustomPriceChange(event)}
+          />
+        </div>
+      )}
+    </>
   );
 }
 

@@ -48,8 +48,6 @@
 
 .livestream__comments-wrapper {
   height: calc(100% - var(--spacing-l) - var(--spacing-s));
-  overflow-y: scroll;
-  overflow-x: visible;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -63,6 +61,8 @@
   display: flex;
   flex-direction: column-reverse;
   font-size: var(--font-small);
+  overflow-y: scroll;
+  overflow-x: visible;
 }
 
 .livestream__comment {
