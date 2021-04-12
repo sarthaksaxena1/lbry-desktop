@@ -366,7 +366,7 @@ function PublishForm(props: Props) {
   useEffect(() => {
     updatePublishForm({
       isMarkdownPost: mode === PUBLISH_MODES.POST,
-      isLivestreamPublish: isLivestreamMode,
+      isLivestreamPublish: mode === PUBLISH_MODES.LIVESTREAM,
     });
   }, [mode, updatePublishForm]);
 
@@ -405,13 +405,17 @@ function PublishForm(props: Props) {
     }
     // LiveStream publish
     if (_uploadType === PUBLISH_MODES.LIVESTREAM.toLowerCase()) {
-      setMode(PUBLISH_MODES.LIVESTREAM);
+      if (enableLivestream) {
+        setMode(PUBLISH_MODES.LIVESTREAM);
+      } else {
+        setMode(PUBLISH_MODES.FILE);
+      }
       return;
     }
 
     // Default to standard file publish
     setMode(PUBLISH_MODES.FILE);
-  }, [uploadType]);
+  }, [uploadType, enableLivestream]);
 
   // if we have a type urlparam, update it? necessary?
   useEffect(() => {
