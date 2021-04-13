@@ -44,7 +44,7 @@ function FileReactions(props: Props) {
       fetchReactions();
 
       if (livestream) {
-        fetchInterval = setInterval(fetchReactions, 10000);
+        fetchInterval = setInterval(fetchReactions, 45000);
       }
     }
 
