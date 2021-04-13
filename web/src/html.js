@@ -57,6 +57,7 @@ function buildOgMetadata(overrideOptions = {}) {
   const cleanDescription = removeMd(description || SITE_DESCRIPTION);
   const head =
     `<title>${SITE_TITLE}</title>\n` +
+    `<meta name="google-site-verification" content="fI1kc5VL_vDfc3-wUoBorjsg9ecBTuvsTLKbnNJKjP8" />\n` +
     `<meta property="og:url" content="${URL}" />\n` +
     `<meta property="og:title" content="${title || OG_HOMEPAGE_TITLE || SITE_TITLE}" />\n` +
     `<meta property="og:site_name" content="${SITE_NAME || SITE_TITLE}"/>\n` +
@@ -73,7 +74,8 @@ function buildOgMetadata(overrideOptions = {}) {
     `<link rel="canonical" content="${SITE_CANONICAL_URL || URL}"/>` +
     `<link rel="search" type="application/opensearchdescription+xml" title="${
       SITE_NAME || SITE_TITLE
-    }" href="${URL}/opensearch.xml">`;
+    }" href="${URL}/opensearch.xml">\n` +
+    getGoogleVideoMetadataScript(title, cleanDescription, 'blah', 'blah');
   return head;
 }
 
@@ -102,6 +104,7 @@ function buildClaimOgMetadata(uri, claim, overrideOptions = {}) {
     imageThumbnail = generateStreamUrl(claim.name, claim.claim_id);
   }
   const claimThumbnail = escapeHtmlProperty(claim.thumbnail_url) || imageThumbnail || `${URL}/public/v2-og.png`;
+  const claimUrl = `${URL}/${claim.name}:${claim.claim_id}`;
 
   // Allow for ovverriding default claim based og metadata
   const title = overrideOptions.title || claimTitle;
@@ -112,6 +115,7 @@ function buildClaimOgMetadata(uri, claim, overrideOptions = {}) {
 
   head += '<meta charset="utf8"/>';
   head += `<title>${title}</title>`;
+  head += `<meta name="google-site-verification" content="fI1kc5VL_vDfc3-wUoBorjsg9ecBTuvsTLKbnNJKjP8" />`;
   head += `<meta name="description" content="${cleanDescription}"/>`;
   if (claim.tags) {
     head += `<meta name="keywords" content="${claim.tags.toString()}"/>`;
@@ -126,8 +130,8 @@ function buildClaimOgMetadata(uri, claim, overrideOptions = {}) {
   head += `<meta property="og:title" content="${title}"/>`;
   head += `<meta name="twitter:title" content="${title}"/>`;
   // below should be canonical_url, but not provided by chainquery yet
-  head += `<meta property="og:url" content="${URL}/${claim.name}:${claim.claim_id}"/>`;
-  head += `<meta name="twitter:url" content="${URL}/${claim.name}:${claim.claim_id}"/>`;
+  head += `<meta property="og:url" content="${claimUrl}"/>`;
+  head += `<meta name="twitter:url" content="${claimUrl}"/>`;
   head += `<link rel="canonical" content="${SITE_CANONICAL_URL || URL}/${claim.name}:${claim.claim_id}"/>`;
 
   if (
@@ -162,7 +166,45 @@ function buildClaimOgMetadata(uri, claim, overrideOptions = {}) {
     head += `<meta name="twitter:card" content="summary_large_image"/>`;
   }
 
+  if (claim.source_media_type && claim.source_media_type.startsWith('video/')) {
+    head += getGoogleVideoMetadataScript(title, cleanDescription, claimUrl, claimThumbnail);
+  }
+
   return head;
+}
+
+function getGoogleVideoMetadataScript(title, description, contentUrl, thumbnailUrl) {
+  const googleVideoMetadata = {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: `${title}`,
+    description: `${description}`,
+    thumbnailUrl: `${thumbnailUrl}`,
+    uploadDate: '2016-03-31T08:00:00+08:00',
+    duration: 'PT1M54S',
+    publisher: {
+      '@type': 'Organization',
+      name: 'Google Nederland',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://example.com/logo.jpg',
+        width: 600,
+        height: 60,
+      },
+    },
+    contentUrl: `${contentUrl}`,
+    embedUrl: `${contentUrl}`, // @KP ??
+    interactionStatistic: {
+      '@type': 'InteractionCounter',
+      interactionType: { '@type': 'http://schema.org/WatchAction' },
+      userInteractionCount: 5647018,
+    },
+    regionsAllowed: 'NL',
+  };
+
+  return (
+    '<script type="application/ld+json">\n' + JSON.stringify(googleVideoMetadata, null, '  ') + '\n' + '</script>\n'
+  );
 }
 
 async function getClaimFromChainqueryOrRedirect(ctx, url, ignoreRedirect = false) {
